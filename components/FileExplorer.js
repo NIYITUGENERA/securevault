@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import TreeItem from "./TreeItem";
 import PropertiesPanel from "./PropertiesPanel";
 import Breadcrumbs from "./Breadcrumbs";
@@ -11,20 +11,22 @@ export default function FileExplorer() {
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [focusedId, setFocusedId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const prevSearchQuery = useRef("");
 
-  const getVisibleItems = useCallback((nodes, expanded) => {
+  const getVisibleItems = useCallback(function getVisible(nodes, expanded) {
     let result = [];
     for (const node of nodes) {
       result.push(node);
       if (node.type === "folder" && expanded.has(node.id) && node.children) {
-        result = [...result, ...getVisibleItems(node.children, expanded)];
+        result = [...result, ...getVisible(node.children, expanded)];
       }
     }
     return result;
   }, []);
 
-  const visibleItems = useMemo(() => getVisibleItems(data, expandedFolders), [expandedFolders, getVisibleItems]);
+  const visibleItems = useMemo(
+    () => getVisibleItems(data, expandedFolders),
+    [expandedFolders, getVisibleItems]
+  );
 
   const toggleFolder = (id) => {
     setExpandedFolders((prev) => {
@@ -43,7 +45,6 @@ export default function FileExplorer() {
       setFocusedId(visibleItems[0].id);
       return;
     }
-
     const currentIndex = visibleItems.findIndex((item) => item.id === focusedId);
     const currentItem = visibleItems[currentIndex];
 
@@ -99,7 +100,7 @@ export default function FileExplorer() {
             ...node,
             children: childrenMatches.length > 0 ? childrenMatches : node.children,
             _hasMatch: matches,
-            _hasChildMatch: childrenMatches.length > 0
+            _hasChildMatch: childrenMatches.length > 0,
           });
         }
         return acc;
@@ -109,10 +110,8 @@ export default function FileExplorer() {
     return filterNodes(data);
   }, [searchQuery]);
 
-  // Fix: compute folders to expand inside useMemo instead of useEffect
-  const expandedFoldersWithSearch = useMemo(() => {
-    if (!searchQuery || searchQuery === prevSearchQuery.current) return expandedFolders;
-    prevSearchQuery.current = searchQuery;
+  useEffect(() => {
+    if (!searchQuery) return;
 
     const getFolderIdsToExpand = (nodes) => {
       let ids = [];
@@ -128,12 +127,15 @@ export default function FileExplorer() {
     };
 
     const idsToExpand = getFolderIdsToExpand(filteredData);
-    if (idsToExpand.length === 0) return expandedFolders;
-
-    const next = new Set(expandedFolders);
-    idsToExpand.forEach((id) => next.add(id));
-    return next;
-  }, [filteredData, searchQuery, expandedFolders]);
+    if (idsToExpand.length > 0) {
+      setExpandedFolders((prev) => {
+        const next = new Set(prev);
+        idsToExpand.forEach((id) => next.add(id));
+        return next;
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery]);
 
   const breadcrumbPath = useMemo(() => {
     if (!selectedItem) return [];
@@ -165,7 +167,9 @@ export default function FileExplorer() {
             <div className="w-3 h-3 rounded-full bg-red-500/50" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
             <div className="w-3 h-3 rounded-full bg-green-500/50" />
-            <span className="text-[10px] text-text-secondary uppercase tracking-[0.2em] ml-4 font-bold">SecureVault v1.0</span>
+            <span className="text-[10px] text-text-secondary uppercase tracking-[0.2em] ml-4 font-bold">
+              SecureVault v1.0
+            </span>
           </div>
           <div className="relative">
             <input
@@ -186,7 +190,7 @@ export default function FileExplorer() {
             <TreeItem
               key={node.id}
               node={node}
-              expandedFolders={expandedFoldersWithSearch}
+              expandedFolders={expandedFolders}
               toggleFolder={toggleFolder}
               selectedId={selectedItem?.id}
               onSelect={setSelectedItem}
