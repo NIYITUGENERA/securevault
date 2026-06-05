@@ -225,10 +225,31 @@ export default function FileExplorer() {
                   <h3 className="text-lg font-medium text-white">{selectedItem.name}</h3>
                   <p className="text-sm text-text-secondary mt-1">Ready for inspection</p>
                 </div>
-                <div className="flex space-x-3 mt-4">
-                   <button className="px-4 py-2 bg-surface-hover border border-white/10 rounded-lg text-xs hover:bg-white hover:text-black transition-all">Open Preview</button>
-                   <button className="px-4 py-2 bg-accent/20 text-accent border border-accent/30 rounded-lg text-xs hover:bg-accent hover:text-white transition-all">Authorize Access</button>
-                </div>
+               <div className="flex space-x-3 mt-4">
+  <button
+    className="px-4 py-2 bg-surface-hover border border-white/10 rounded-lg text-xs hover:bg-white hover:text-black transition-all"
+    onClick={() => alert(`Opening preview for: ${selectedItem.name}`)}
+  >Open Preview</button>
+  <button
+    className="px-4 py-2 bg-accent/20 text-accent border border-accent/30 rounded-lg text-xs hover:bg-accent hover:text-white transition-all"
+    onClick={() => alert(`Access authorized for: ${selectedItem.name}`)}
+  >Authorize Access</button>
+</div>
+<div className="mt-3">
+  <button
+    className="px-4 py-2 bg-white text-black rounded-lg text-xs hover:bg-accent hover:text-white transition-all w-full"
+    onClick={() => {
+      const content = JSON.stringify(selectedItem, null, 2);
+      const blob = new Blob([content], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = selectedItem.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }}
+  >Download File</button>
+</div>
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-text-secondary space-y-4 opacity-50">
