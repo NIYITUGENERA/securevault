@@ -46,9 +46,9 @@ A high-performance, modern "File Explorer" UI built for SecureVault Inc. to mana
 
 **Typography:** Clean sans-serif with monospace accents for system IDs and metadata.
 
-**Spacing:** 8px base grid — consistent padding and margin scale throughout.
+**Spacing:** 8px base grid  consistent padding and margin scale throughout.
 
-**Component States:** Default, Hover, Selected, Focused — all defined per component.
+**Component States:** Default, Hover, Selected, Focused  all defined per component.
 
 ---
 
@@ -60,7 +60,7 @@ The core of this application is a fully recursive `FileTree` component that rend
 - Each node in the JSON is passed to a `TreeNode` component
 - If the node has `children`, it renders itself recursively
 - Expand/collapse state is managed locally per node using `useState`
-- There is no depth limit — the component handles 2 levels or 20 levels identically without breaking the UI
+- There is no depth limit  the component handles 2 levels or 20 levels identically without breaking the UI
 
 **Why this approach:**
 - Mirrors the natural tree structure of the data
@@ -69,7 +69,7 @@ The core of this application is a fully recursive `FileTree` component that rend
 
 ---
 
-## Wildcard Feature — Live Search & Filter
+## Wildcard Feature  Live Search & Filter
 
 **Feature:** A real-time search bar that filters the entire file tree as you type.
 
@@ -87,17 +87,17 @@ Legal and financial professionals deal with hundreds of deeply nested files. Man
 ##  Keyboard Accessibility
 
 Full keyboard navigation is supported:
-- **↑ / ↓** — Move focus between visible items
-- **→** — Expand a folder
-- **←** — Collapse a folder
-- **Enter** — Select a file
+- **↑ / ↓** = Move focus between visible items
+- **→** = Expand a folder
+- **←** = Collapse a folder
+- **Enter** = Select a file
 
 ---
 
 ##  Tech Stack
 
 - **Framework:** Next.js (React)
-- **Styling:** Tailwind CSS (custom component architecture — no component libraries)
+- **Styling:** Tailwind CSS (custom component architecture  no component libraries)
 - **Data:** Local `data.json` file
 - **Deployment:** Vercel
 
