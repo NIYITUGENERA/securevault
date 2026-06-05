@@ -12,7 +12,6 @@ export default function FileExplorer() {
   const [focusedId, setFocusedId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Recursive function to flatten the visible tree for keyboard navigation
   const getVisibleItems = useCallback((nodes, expanded) => {
     let result = [];
     for (const node of nodes) {
@@ -84,7 +83,6 @@ export default function FileExplorer() {
     }
   };
 
-  // Search logic and auto-expansion
   const filteredData = useMemo(() => {
     if (!searchQuery) return data;
 
@@ -95,10 +93,9 @@ export default function FileExplorer() {
         if (node.children) {
           childrenMatches = filterNodes(node.children);
         }
-
         if (matches || childrenMatches.length > 0) {
-          acc.push({ 
-            ...node, 
+          acc.push({
+            ...node,
             children: childrenMatches.length > 0 ? childrenMatches : node.children,
             _hasMatch: matches,
             _hasChildMatch: childrenMatches.length > 0
@@ -111,7 +108,6 @@ export default function FileExplorer() {
     return filterNodes(data);
   }, [searchQuery]);
 
-  // Auto-expand folders that contain matches
   useEffect(() => {
     if (!searchQuery) return;
 
@@ -138,10 +134,9 @@ export default function FileExplorer() {
     }
   }, [filteredData, searchQuery]);
 
-  // Breadcrumb calculation (simple version: finds path to selected item)
   const breadcrumbPath = useMemo(() => {
     if (!selectedItem) return [];
-    
+
     const findPath = (nodes, targetId, currentPath = []) => {
       for (const node of nodes) {
         if (node.id === targetId) return [...currentPath, node.name];
@@ -152,17 +147,17 @@ export default function FileExplorer() {
       }
       return null;
     };
-    
+
     return findPath(data, selectedItem.id) || [];
   }, [selectedItem]);
 
   return (
-    <div 
+    <div
       className="flex h-screen bg-background overflow-hidden border border-white/5 m-4 rounded-xl shadow-2xl"
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
-      {/* Left Sidebar: Explorer */}
+      {/* Left Sidebar */}
       <div className="w-80 flex flex-col border-r border-white/5 bg-surface/50 backdrop-blur-xl">
         <div className="p-4 border-b border-white/5">
           <div className="flex items-center space-x-2 mb-4">
@@ -171,7 +166,6 @@ export default function FileExplorer() {
             <div className="w-3 h-3 rounded-full bg-green-500/50" />
             <span className="text-[10px] text-text-secondary uppercase tracking-[0.2em] ml-4 font-bold">SecureVault v1.0</span>
           </div>
-          
           <div className="relative">
             <input
               type="text"
@@ -202,18 +196,17 @@ export default function FileExplorer() {
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content */}
       <div className="flex-1 flex flex-col bg-black/20">
         <Breadcrumbs path={breadcrumbPath} />
-        
+
         <div className="flex-1 flex">
-          {/* File View / Preview Area */}
           <div className="flex-1 flex flex-col p-8 border-r border-white/5">
             <div className="mb-8">
               <h1 className="text-2xl font-bold text-white mb-2">Workspace</h1>
               <p className="text-sm text-text-secondary">Manage your secure documents and legal assets.</p>
             </div>
-            
+
             {selectedItem ? (
               <div className="bg-surface border border-white/5 rounded-2xl p-8 flex flex-col items-center justify-center space-y-4 animate-in zoom-in-95 duration-300">
                 <div className="p-6 bg-accent/5 rounded-full">
@@ -225,31 +218,16 @@ export default function FileExplorer() {
                   <h3 className="text-lg font-medium text-white">{selectedItem.name}</h3>
                   <p className="text-sm text-text-secondary mt-1">Ready for inspection</p>
                 </div>
-               <div className="flex space-x-3 mt-4">
-  <button
-    className="px-4 py-2 bg-surface-hover border border-white/10 rounded-lg text-xs hover:bg-white hover:text-black transition-all"
-    onClick={() => alert(`Opening preview for: ${selectedItem.name}`)}
-  >Open Preview</button>
-  <button
-    className="px-4 py-2 bg-accent/20 text-accent border border-accent/30 rounded-lg text-xs hover:bg-accent hover:text-white transition-all"
-    onClick={() => alert(`Access authorized for: ${selectedItem.name}`)}
-  >Authorize Access</button>
-</div>
-<div className="mt-3">
-  <button
-    className="px-4 py-2 bg-white text-black rounded-lg text-xs hover:bg-accent hover:text-white transition-all w-full"
-    onClick={() => {
-      const content = JSON.stringify(selectedItem, null, 2);
-      const blob = new Blob([content], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = selectedItem.name;
-      a.click();
-      URL.revokeObjectURL(url);
-    }}
-  >Download File</button>
-</div>
+                <div className="flex space-x-3 mt-4">
+                  <button
+                    className="px-4 py-2 bg-surface-hover border border-white/10 rounded-lg text-xs hover:bg-white hover:text-black transition-all"
+                    onClick={() => alert(`Opening preview for: ${selectedItem.name}`)}
+                  >Open Preview</button>
+                  <button
+                    className="px-4 py-2 bg-accent/20 text-accent border border-accent/30 rounded-lg text-xs hover:bg-accent hover:text-white transition-all"
+                    onClick={() => alert(`Access authorized for: ${selectedItem.name}`)}
+                  >Authorize Access</button>
+                </div>
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-text-secondary space-y-4 opacity-50">
@@ -261,7 +239,7 @@ export default function FileExplorer() {
             )}
           </div>
 
-          {/* Right Sidebar: Properties */}
+          {/* Right Sidebar */}
           <div className="w-72 bg-surface/30 backdrop-blur-md">
             <PropertiesPanel selectedItem={selectedItem} />
           </div>

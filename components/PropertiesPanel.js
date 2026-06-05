@@ -1,5 +1,4 @@
 "use client";
-
 export default function PropertiesPanel({ selectedItem }) {
   if (!selectedItem) {
     return (
@@ -8,8 +7,18 @@ export default function PropertiesPanel({ selectedItem }) {
       </div>
     );
   }
-
   const isFolder = selectedItem.type === "folder";
+
+  const handleDownload = () => {
+    const content = JSON.stringify(selectedItem, null, 2);
+    const blob = new Blob([content], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = selectedItem.name;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="flex flex-col p-6 space-y-6 animate-in fade-in duration-300">
@@ -32,20 +41,17 @@ export default function PropertiesPanel({ selectedItem }) {
           {selectedItem.type}
         </span>
       </div>
-
       <div className="space-y-4 pt-6 border-t border-white/10">
         <div className="flex justify-between items-center">
           <span className="text-xs text-text-secondary uppercase tracking-tight">System ID</span>
           <span className="text-sm font-mono text-accent">{selectedItem.id}</span>
         </div>
-        
         {!isFolder && (
           <div className="flex justify-between items-center">
             <span className="text-xs text-text-secondary uppercase tracking-tight">Size</span>
             <span className="text-sm text-white">{selectedItem.size || "Unknown"}</span>
           </div>
         )}
-
         <div className="flex justify-between items-center">
           <span className="text-xs text-text-secondary uppercase tracking-tight">Location</span>
           <span className="text-sm text-white truncate max-w-[200px]" title="Cloud/SecureVault/Enterprise">
@@ -53,9 +59,11 @@ export default function PropertiesPanel({ selectedItem }) {
           </span>
         </div>
       </div>
-
       <div className="mt-auto pt-6">
-        <button className="w-full py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-zinc-200 transition-colors">
+        <button
+          onClick={handleDownload}
+          className="w-full py-2 bg-white text-black text-sm font-semibold rounded-lg hover:bg-zinc-200 transition-colors"
+        >
           Download File
         </button>
       </div>
