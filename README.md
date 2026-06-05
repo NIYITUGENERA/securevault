@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SecureVault Dashboard
 
-## Getting Started
+A high-performance, modern "File Explorer" UI built for SecureVault Inc. to manage deeply nested legal and financial documents.
 
-First, run the development server:
+## 🚀 Setup Instructions
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Clone the repository** (if not already in it).
+2.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+3.  **Run the development server**:
+    ```bash
+    npm run dev
+    ```
+4.  **Open the application**: Navigate to `http://localhost:3000` in your browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Design System
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+**Aesthetic**: Cyber-secure, precise, and fast (Dark Mode).
+**Approach**: I employed a "Code-First" design system using Tailwind CSS and CSS Variables in `globals.css`. 
+- **Colors**: Deep blacks (`#050505`), elevated surfaces (`#111111`), and an electric blue accent (`#00d1ff`).
+- **Typography**: Clean, sans-serif stack (Geist) with monospace accents for system IDs.
+- **Components**: Built from scratch using Tailwind for layout and component abstraction, ensuring no external UI libraries were used.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🌲 Recursive Strategy
 
-## Learn More
+The file explorer implements a **Recursive Component Pattern** via the `TreeItem` component. 
+- **Data Structure**: The application consumes a nested JSON tree.
+- **Rendering**: Each `TreeItem` checks if its node has children. If it does and is "expanded," it recursively renders another set of `TreeItem` components.
+- **Depth Handling**: This strategy allows for infinite nesting depth while maintaining high performance and a clean DOM structure.
+- **Expansion State**: Managed via a `Set` of folder IDs in the parent `FileExplorer` component for $O(1)$ lookups.
 
-To learn more about Next.js, take a look at the following resources:
+## ⌨️ Keyboard Accessibility
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Power users can navigate the vault entirely via keyboard:
+- **Up/Down Arrows**: Move focus between visible items.
+- **Right Arrow**: Expand a folder.
+- **Left Arrow**: Collapse a folder.
+- **Enter**: Select an item (displays properties and workspace context).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🃏 Wildcard Feature: Breadcrumbs
 
-## Deploy on Vercel
+**The Gap Identified**: In deeply nested structures, users often lose track of their absolute location within the hierarchy (contextual drift). While a tree view shows neighbors, it doesn't clearly show the "lineage" of a file at a glance.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**The Solution**: I implemented a dynamic **Breadcrumb Navigation** bar.
+- **Value to Business**: It provides immediate orientation for legal professionals managing 10+ levels of nesting and allows for faster spatial reasoning within the vault.
+- **Implementation**: A recursive path-finding algorithm calculates the exact lineage from the root to the selected item in real-time.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## ✨ Bonus Feature: Deep Search & Auto-Expand
+
+- **Search**: A real-time filter that matches file and folder names.
+- **Auto-Expand**: When a search match is found deep within a folder, the application automatically expands all parent folders to reveal the match, fulfilling the requirement for an intuitive search experience.
+
+---
+*Built with React, Next.js, and Tailwind CSS.*
