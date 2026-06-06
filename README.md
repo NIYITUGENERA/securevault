@@ -4,7 +4,7 @@ A high-performance, modern "File Explorer" UI built for SecureVault Inc. to mana
 
 **Live Demo:** [https://securevault-navy-one.vercel.app](https://securevault-navy-one.vercel.app)
 
-**Design File:** *(Figma)*
+**Design File:** *[(https://www.figma.com/community/file/1644944416438720643](https://www.figma.com/design/GqGV15W79J8Dnotk8HjksS/SecureVault-Design-System?node-id=0-1&t=M2Y0kfyyZQWWeaCP-1))*
 
 ---
 
